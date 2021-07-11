@@ -12,42 +12,52 @@ import SwiftUI
 
 struct ContentView: View {
 
-    let columns: [GridItem] = [GridItem(.flexible()),
-                               GridItem(.flexible()),
-                               GridItem(.flexible())]
-
     // empty game board is 9 nils
+    // a nil means it is empty (as versus '0' or 'false' which are specifc values)
     @State private var moves: [Move?] = Array(repeating: nil, count: 9)
-    @State private var isHumansTurn = true
     
+    // this variable only used here for testing/demonstration purposes
+    @State private var isHumansTurn = true
+        
+    // here is the main body
     var body: some View {
-        GeometryReader { geometry in
+        VStack {
+            Spacer()
+            Text("Tic Tac Toe")
             VStack {
-                Spacer()
-                LazyVGrid(columns:columns, spacing: 5){
-                    ForEach(0..<9) {i in
-                        ZStack{
-                            Circle()
-                                .foregroundColor(.red).opacity(0.5)
-                                .frame(width: geometry.size.width/3 - 15,
-                                       height: geometry.size.width/3 - 15)
-                            Image(systemName: moves[i]?.indicator ?? "")
-                                .resizable()
-                                .frame(width: 40, height: 40)
-                                .foregroundColor(.white)
+                ForEach(0..<3) { column in
+                    HStack {
+                        Spacer()
+                        ForEach(0..<3) { row in
+                            ZStack{
+                                Rectangle()
+                                    .foregroundColor(.blue).opacity(0.5)
+                                    .aspectRatio(1.0, contentMode: .fit)
+                                Image(systemName: moves[gridPosition(column: column, row: row)]?.indicator ?? "")
+                                    .resizable()
+                                    .frame(width: 40, height: 40)
+                                    .foregroundColor(.white)
+                            }
+                            .onTapGesture {
+                                moves[gridPosition(column: column, row: row)] =
+                                    Move(player: isHumansTurn ? .human : .computer, boardIndex: gridPosition(column: column, row: row))
+                                isHumansTurn.toggle()
+                            }
                         }
-                        .onTapGesture {
-                            moves[i] = Move(player: isHumansTurn ? .human : .computer, boardIndex: i)
-                            isHumansTurn.toggle()
-                        }
+                        Spacer()
                     }
                 }
-                Spacer()
             }
-            .padding()
+            Spacer()
         }
+        .padding()
+    }
+    // there must be a cleaner way to do this part
+    func gridPosition(column y: Int, row x: Int) -> Int {
+        return 3*y + x
     }
 }
+ 
 
 enum Player {
     case human, computer
