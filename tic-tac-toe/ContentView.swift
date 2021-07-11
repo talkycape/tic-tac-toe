@@ -33,11 +33,12 @@ struct ContentView: View {
                             ZStack{
                                 Rectangle()
                                     .foregroundColor(.blue).opacity(0.5)
+                                    // aspect ratio of 1.0 ensures each rectangle is square
                                     .aspectRatio(1.0, contentMode: .fit)
-                                Image(systemName: moves[i]?.indicator ?? "")
-                                    .resizable()
-                                    .frame(width: 40, height: 40)
-                                    .foregroundColor(.white)
+                                Text(moves[i]?.indicator ?? " ")
+                                    // create giant font size and then let it scale itself down
+                                    .font(.system(size: 500))
+                                    .minimumScaleFactor(0.01)
                             }
                             .onTapGesture {
                                 moves[i] = Move(player: isHumansTurn ? .human : .computer, boardIndex: i)
@@ -48,6 +49,8 @@ struct ContentView: View {
                     }
                 }
             }
+            // aspect ratio of 1.0 enures our 3x3 is square
+            .aspectRatio(1.0, contentMode: .fit)
             Spacer()
         }
         .padding()
@@ -63,7 +66,7 @@ struct Move {
     let boardIndex: Int
     
     var indicator: String {
-        return player == .human ? "xmark" : "circle"
+        return player == .human ? "X" : "O"
     }
 }
 
