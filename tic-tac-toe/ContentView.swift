@@ -18,7 +18,7 @@ struct ContentView: View {
     
     // this variable only used here for testing/demonstration purposes
     @State private var isHumansTurn = true
-        
+            
     // here is the main body
     var body: some View {
         VStack {
@@ -29,18 +29,18 @@ struct ContentView: View {
                     HStack {
                         Spacer()
                         ForEach(0..<3) { row in
+                            let i = 3*column + row
                             ZStack{
                                 Rectangle()
                                     .foregroundColor(.blue).opacity(0.5)
                                     .aspectRatio(1.0, contentMode: .fit)
-                                Image(systemName: moves[gridPosition(column: column, row: row)]?.indicator ?? "")
+                                Image(systemName: moves[i]?.indicator ?? "")
                                     .resizable()
                                     .frame(width: 40, height: 40)
                                     .foregroundColor(.white)
                             }
                             .onTapGesture {
-                                moves[gridPosition(column: column, row: row)] =
-                                    Move(player: isHumansTurn ? .human : .computer, boardIndex: gridPosition(column: column, row: row))
+                                moves[i] = Move(player: isHumansTurn ? .human : .computer, boardIndex: i)
                                 isHumansTurn.toggle()
                             }
                         }
@@ -52,13 +52,8 @@ struct ContentView: View {
         }
         .padding()
     }
-    // there must be a cleaner way to do this part
-    func gridPosition(column y: Int, row x: Int) -> Int {
-        return 3*y + x
-    }
 }
  
-
 enum Player {
     case human, computer
 }
