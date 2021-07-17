@@ -28,6 +28,8 @@ struct GameView: View {
                                 GameSquareView()
                                 PlayerIndicator(symbol: viewModel.moves[i]?.indicator ?? "")
                             }
+                            // aspect ratio of 1.0 ensures each rectangle is square
+                            .aspectRatio(1.0, contentMode: .fit)
                             .onTapGesture {
                                 viewModel.processPlayerMove(for: i)
                             }
@@ -67,8 +69,6 @@ struct GameSquareView: View {
     var body: some View {
         Rectangle()
             .foregroundColor(.blue).opacity(0.5)
-            // aspect ratio of 1.0 ensures each rectangle is square
-            .aspectRatio(1.0, contentMode: .fit)
     }
 }
 
