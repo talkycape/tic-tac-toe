@@ -24,8 +24,7 @@ struct Move {
 
 struct ContentView: View {
 
-    // empty game board is 9 nils
-    // a nil means it is empty (as versus '0' or 'false' which are specifc values)
+    // empty game board is 9 nils: nil means it is empty (as versus '0' or 'false' which are specifc values)
     @State private var moves: [Move?] = Array(repeating: nil, count: 9)
     
     @State private var isHumansTurn = true
@@ -34,6 +33,7 @@ struct ContentView: View {
         VStack {
             Spacer()
             Text("Tic Tac Toe")
+                .font(.title)
             VStack {
                 ForEach(0..<3) { column in
                     HStack {
@@ -59,7 +59,6 @@ struct ContentView: View {
                     }
                 }
             }
-            // aspect ratio of 1.0 enures our 3x3 is square
             .aspectRatio(1.0, contentMode: .fit)
             Spacer()
         }
