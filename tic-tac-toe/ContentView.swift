@@ -100,7 +100,7 @@ struct ContentView: View {
         return moves.contains(where: { $0?.boardIndex == index})
     }
 
-    // AI is just doing something random
+    // Originally AI is just doing something random (only that last strategy)
     // BUT
     // A better AI Strategy:
     // if AI can win, then win
@@ -156,19 +156,35 @@ struct ContentView: View {
     }
 
     func checkWinCondition(for player: Player, in moves: [Move?]) -> Bool {
-        let winPatterns: Set<Set<Int>> = [[0,1,2], [3,4,5], [6,7,8],
-                                          [0,3,6], [1,4,7], [2,5,8],
-                                          [0,4,8], [2,4,6]]
-        
-        let playerMoves = moves.compactMap { $0 }.filter { $0.player == player }
-        let playerPostions = Set(playerMoves.map { $0.boardIndex })
-        
-        for pattern in winPatterns where pattern.isSubset(of: playerPostions) { return true }
+        let winPatterns: [[Int]] = [[0,1,2], [3,4,5], [6,7,8],
+                                    [0,3,6], [1,4,7], [2,5,8],
+                                    [0,4,8], [2,4,6]]
+
+        for pattern in winPatterns {
+            // for all winPatterns, check to see if player has chosen all 3 winning slots
+            if (moves[pattern[0]]?.player == player) &&
+                (moves[pattern[1]]?.player == player) &&
+                (moves[pattern[2]]?.player == player) {
+                return true
+            }
+        }
         return false
     }
     
     func checkForDraw(in moves: [Move?]) -> Bool {
-        return moves.compactMap { $0 }.count == 9
+        // draw if all possible moves have been taken
+        if (moves[0] != nil) &&
+            (moves[1] != nil) &&
+            (moves[2] != nil) &&
+            (moves[3] != nil) &&
+            (moves[4] != nil) &&
+            (moves[5] != nil) &&
+            (moves[6] != nil) &&
+            (moves[7] != nil) &&
+            (moves[8] != nil) {
+            return true
+        }
+        return false
     }
     
     func resetGame() {
