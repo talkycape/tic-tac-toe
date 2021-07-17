@@ -9,6 +9,18 @@
 
 import SwiftUI
 
+enum Player {
+    case human, computer
+}
+
+struct Move {
+    let player: Player
+    let boardIndex: Int
+    
+    var indicator: String {
+        return player == .human ? "X" : "O"
+    }
+}
 
 struct ContentView: View {
 
@@ -16,10 +28,8 @@ struct ContentView: View {
     // a nil means it is empty (as versus '0' or 'false' which are specifc values)
     @State private var moves: [Move?] = Array(repeating: nil, count: 9)
     
-    // this variable only used here for testing/demonstration purposes
     @State private var isHumansTurn = true
             
-    // here is the main body
     var body: some View {
         VStack {
             Spacer()
@@ -57,19 +67,6 @@ struct ContentView: View {
     }
 }
  
-enum Player {
-    case human, computer
-}
-
-struct Move {
-    let player: Player
-    let boardIndex: Int
-    
-    var indicator: String {
-        return player == .human ? "X" : "O"
-    }
-}
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
