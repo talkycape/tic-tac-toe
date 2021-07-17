@@ -33,13 +33,13 @@ struct ContentView: View {
                             ZStack{
                                 Rectangle()
                                     .foregroundColor(.blue).opacity(0.5)
-                                    // aspect ratio of 1.0 ensures each rectangle is square
-                                    .aspectRatio(1.0, contentMode: .fit)
                                 Text(moves[i]?.indicator ?? " ")
                                     // create giant font size and then let it scale itself down
                                     .font(.system(size: 500))
                                     .minimumScaleFactor(0.01)
                             }
+                            // aspect ratio of 1.0 ensures each rectangle is square
+                            .aspectRatio(1.0, contentMode: .fit)
                             .onTapGesture {
                                 moves[i] = Move(player: isHumansTurn ? .human : .computer, boardIndex: i)
                                 isHumansTurn.toggle()
