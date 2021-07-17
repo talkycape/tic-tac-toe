@@ -13,32 +13,40 @@ import SwiftUI
 struct GameView: View {
 
     @StateObject private var viewModel = GameViewModel()
-    
+
     var body: some View {
-        GeometryReader { geometry in
+        VStack {
+            Spacer()
+            Text("Tic Tac Toe")
             VStack {
-                Spacer()
-                LazyVGrid(columns: viewModel.columns, spacing: 5){
-                    ForEach(0..<9) {i in
-                        ZStack{
-                            GameSquareView(proxy: geometry)
-                            PlayerIndicator(systemImageName: viewModel.moves[i]?.indicator ?? "")
+                ForEach(0..<3) { column in
+                    HStack {
+                        Spacer()
+                        ForEach(0..<3) { row in
+                            let i = 3*column + row
+                            ZStack{
+                                GameSquareView()
+                                PlayerIndicator(symbol: viewModel.moves[i]?.indicator ?? "")
+                            }
+                            .onTapGesture {
+                                viewModel.processPlayerMove(for: i)
+                            }
                         }
-                        .onTapGesture {
-                            viewModel.processPlayerMove(for: i)
-                        }
+                        Spacer()
                     }
                 }
-                Spacer()
             }
+            // aspect ratio of 1.0 enures our 3x3 is square
+            .aspectRatio(1.0, contentMode: .fit)
             .disabled(viewModel.isGameBoardDisabled)
-            .padding()
             .alert(item: $viewModel.alertItem, content: {alertItem in
                 Alert(title: alertItem.title,
                       message: alertItem.message,
                       dismissButton: .default(alertItem.buttonTitle, action: { viewModel.resetGame() }))
             })
+            Spacer()
         }
+        .padding()
     }
 }
 
@@ -51,32 +59,31 @@ struct Move {
     let boardIndex: Int
     
     var indicator: String {
-        return player == .human ? "xmark" : "circle"
+        return player == .human ? "X" : "O"
+    }
+}
+
+struct GameSquareView: View {
+    var body: some View {
+        Rectangle()
+            .foregroundColor(.blue).opacity(0.5)
+            // aspect ratio of 1.0 ensures each rectangle is square
+            .aspectRatio(1.0, contentMode: .fit)
+    }
+}
+
+struct PlayerIndicator: View {
+    var symbol: String
+    var body: some View {
+        Text(symbol)
+            // create giant font size and then let it scale itself down
+            .font(.system(size: 500))
+            .minimumScaleFactor(0.01)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         GameView()
-    }
-}
-
-struct GameSquareView: View {
-    var proxy: GeometryProxy
-    var body: some View {
-        Circle()
-            .foregroundColor(.red).opacity(0.5)
-            .frame(width: proxy.size.width/3 - 15,
-                   height: proxy.size.width/3 - 15)
-    }
-}
-
-struct PlayerIndicator: View {
-    var systemImageName: String
-    var body: some View {
-        Image(systemName: systemImageName)
-            .resizable()
-            .frame(width: 40, height: 40)
-            .foregroundColor(.white)
     }
 }
