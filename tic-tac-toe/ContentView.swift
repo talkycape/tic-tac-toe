@@ -43,9 +43,6 @@ struct ContentView: View {
                                 if isSquareOccupied(in: moves, forIndex: i) { return }
                                 moves[i] = Move(player: .human, boardIndex: i)
                                 
-                                //                            moves[i] = Move(player: isHumansTurn ? .human : .computer, boardIndex: i)
-                                //                            isHumansTurn.toggle()
-                                
                                 // check for win condition or draw
                                 if checkWinCondition(for: .human, in: moves) {
                                     alertItem = AlertContext.humanWin
@@ -97,7 +94,8 @@ struct ContentView: View {
     }
     
     func isSquareOccupied(in moves: [Move?], forIndex index: Int) -> Bool {
-        return moves.contains(where: { $0?.boardIndex == index})
+        if moves[index] != nil {return true}
+        return false
     }
 
     // Originally AI is just doing something random (only that last strategy)
