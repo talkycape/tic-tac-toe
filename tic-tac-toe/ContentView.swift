@@ -103,8 +103,46 @@ struct ContentView: View {
     // if AI cant' block, then take middle square
     // if AI can't take middle square, then take random available square
     func determineComputerMovePosition(in moves: [Move?]) -> Int {
-        var movePosition = Int.random(in: 0..<9)
+
+        let winPatterns: Set<Set<Int>> = [[0,1,2], [3,4,5], [6,7,8],
+                                          [0,3,6], [1,4,7], [2,5,8],
+                                          [0,4,8], [2,4,6]]
+
+        // if AI can win, then win
+        let computerMoves = moves.compactMap { $0 }.filter { $0.player == .computer }
+        let computerPostions = Set(computerMoves.map { $0.boardIndex })
+
+        for pattern in winPatterns {
+            let winPositions = pattern.subtracting(computerPostions)
             
+            if winPositions.count == 1 {
+                let isAvailable = !isSquareOccupied(in: moves, forIndex: winPositions.first!)
+                if isAvailable { return winPositions.first! }
+            }
+        }
+        
+        // if AI can't win, then block
+        let humanMoves = moves.compactMap { $0 }.filter { $0.player == .human }
+        let humanPositions = Set(humanMoves.map { $0.boardIndex })
+
+        for pattern in winPatterns {
+            let winPositions = pattern.subtracting(humanPositions)
+            
+            if winPositions.count == 1 {
+                let isAvailable = !isSquareOccupied(in: moves, forIndex: winPositions.first!)
+                if isAvailable { return winPositions.first! }
+            }
+        }
+
+        // if AI cant' block, then take middle square
+        let centerSquare = 4
+        if !isSquareOccupied(in: moves, forIndex: centerSquare) {
+            return centerSquare
+        }
+        
+        // if AI can't take middle square, then take random available square
+        var movePosition = Int.random(in: 0..<9)
+
         while isSquareOccupied(in: moves, forIndex: movePosition) {
             movePosition = Int.random(in: 0..<9)
         }
