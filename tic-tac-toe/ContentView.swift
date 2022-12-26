@@ -6,6 +6,8 @@
 //  With thanks to Sean Allen for his youtube example
 //  https://www.youtube.com/watch?v=MCLiPW2ns2w
 //
+//  Incorporating UI elements from the SwiftUI Cookbook by Scalzo and Nzokwe
+//
 
 import SwiftUI
 
