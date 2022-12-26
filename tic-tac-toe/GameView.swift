@@ -20,6 +20,7 @@ struct GameView: View {
         VStack {
             Spacer()
             Text("Tic Tac Toe")
+                .font(.title)
             Spacer()
             ZStack {
                 GridShape()
