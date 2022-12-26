@@ -89,6 +89,7 @@ struct ContentView: View {
                       dismissButton: .default(alertItem.buttonTitle, action: { resetGame() }))
             })
         }
+        .padding(20)
         .aspectRatio(contentMode: .fit)
     }
     
