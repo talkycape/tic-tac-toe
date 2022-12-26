@@ -21,56 +21,41 @@ struct ContentView: View {
     @State private var alertItem: AlertItem?
     
     var body: some View {
-        ZStack {
-            GridShape()
-                .stroke(.indigo, lineWidth: 15)
-            VStack {
-                ForEach(0..<3) { column in
-                    HStack {
-                        ForEach(0..<3) { row in
-                            let i = 3*column + row
-                            ZStack {
-                                Rectangle()
-                                    .fill(.clear)
-                                    .contentShape(Rectangle()) // allows the clear area to be tap-able
-                                if (moves[i]?.indicator == "X") {
-                                    Cross()
+        VStack {
+            Spacer()
+            Text("Tic Tac Toe")
+                .font(.title)
+            Spacer()
+            ZStack {
+                GridShape()
+                    .stroke(.indigo, lineWidth: 15)
+                VStack {
+                    ForEach(0..<3) { column in
+                        HStack {
+                            ForEach(0..<3) { row in
+                                let i = 3*column + row
+                                ZStack {
+                                    Rectangle()
+                                        .fill(.clear)
+                                        .contentShape(Rectangle()) // allows the clear area to be tap-able
+                                    if (moves[i]?.indicator == "X") {
+                                        Cross()
+                                    }
+                                    else if (moves[i]?.indicator == "O") {
+                                        Nought()
+                                    }
+                                    else {
+                                        Color.clear
+                                    }
                                 }
-                                else if (moves[i]?.indicator == "O") {
-                                    Nought()
-                                }
-                                else {
-                                    Color.clear
-                                }
-                            }
-                            .padding(20)
-                            .onTapGesture {
-                                if isSquareOccupied(in: moves, forIndex: i) { return }
-                                moves[i] = Move(player: .human, boardIndex: i)
-                                
-                                // check for win condition or draw
-                                if checkWinCondition(for: .human, in: moves) {
-                                    alertItem = AlertContext.humanWin
-                                    return
-                                }
-                                if checkForDraw(in: moves) {
-                                    alertItem = AlertContext.draw
-                                    return
-                                }
-                                
-                                // lock the board once human has moved (computer's turn)
-                                isGameBoardDisabled = true
-                                
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    let computerPosition = determineComputerMovePosition(in: moves)
-                                    moves[computerPosition] = Move(player: .computer, boardIndex: computerPosition)
-                                    
-                                    // unlock the board once the computer has moved (humans' turn)
-                                    isGameBoardDisabled = false
+                                .padding(20)
+                                .onTapGesture {
+                                    if isSquareOccupied(in: moves, forIndex: i) { return }
+                                    moves[i] = Move(player: .human, boardIndex: i)
                                     
                                     // check for win condition or draw
-                                    if checkWinCondition(for: .computer, in: moves) {
-                                        alertItem = AlertContext.computerWin
+                                    if checkWinCondition(for: .human, in: moves) {
+                                        alertItem = AlertContext.humanWin
                                         return
                                     }
                                     if checkForDraw(in: moves) {
@@ -78,12 +63,34 @@ struct ContentView: View {
                                         return
                                     }
                                     
+                                    // lock the board once human has moved (computer's turn)
+                                    isGameBoardDisabled = true
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                        let computerPosition = determineComputerMovePosition(in: moves)
+                                        moves[computerPosition] = Move(player: .computer, boardIndex: computerPosition)
+                                        
+                                        // unlock the board once the computer has moved (humans' turn)
+                                        isGameBoardDisabled = false
+                                        
+                                        // check for win condition or draw
+                                        if checkWinCondition(for: .computer, in: moves) {
+                                            alertItem = AlertContext.computerWin
+                                            return
+                                        }
+                                        if checkForDraw(in: moves) {
+                                            alertItem = AlertContext.draw
+                                            return
+                                        }
+                                        
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+            .padding(20)
             .disabled(isGameBoardDisabled)
             .alert(item: $alertItem, content: {alertItem in
                 Alert(title: alertItem.title,
@@ -91,7 +98,6 @@ struct ContentView: View {
                       dismissButton: .default(alertItem.buttonTitle, action: { resetGame() }))
             })
         }
-        .padding(20)
         .aspectRatio(contentMode: .fit)
     }
     
