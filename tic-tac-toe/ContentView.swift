@@ -34,7 +34,7 @@ struct ContentView: View {
                                     .foregroundColor(.blue).opacity(0.5)
                                 Text(moves[i]?.indicator ?? " ")
                                     // create giant font size and then let it scale itself down
-                                    .font(.system(size: 500))
+                                    .font(.system(size: 100))
                                     .minimumScaleFactor(0.01)
                             }
                             // aspect ratio of 1.0 ensures each rectangle is square
